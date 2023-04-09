@@ -1,7 +1,8 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import svelteLogo from "./assets/svelte.svg";
+  import viteLogo from "/vite.svg";
+  import goLogo from "./assets/golang.svg";
+  import Counter from "./lib/Counter.svelte";
 </script>
 
 <main>
@@ -12,6 +13,9 @@
     <a href="https://svelte.dev" target="_blank" rel="noreferrer">
       <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
     </a>
+    <a href="https://go.dev/" target="_blank" rel="noreferrer">
+      <img src={goLogo} class="logo golang" alt="Golang Logo" />
+    </a>
   </div>
   <h1>Go + Svelte + Vite</h1>
 
@@ -19,12 +23,8 @@
     <Counter />
   </div>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
   <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
+    Click on the Vite, Svelte and Go logos to learn more
   </p>
 </main>
 
@@ -40,6 +40,9 @@
   }
   .logo.svelte:hover {
     filter: drop-shadow(0 0 2em #ff3e00aa);
+  }
+  .logo.golang:hover {
+    filter: drop-shadow(0 0 2em #007d9caa);
   }
   .read-the-docs {
     color: #888;
