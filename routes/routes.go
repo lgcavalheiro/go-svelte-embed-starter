@@ -2,19 +2,19 @@ package routes
 
 import (
 	"fmt"
+	"net/http"
 
-	"github.com/labstack/echo/v4"
 	"github.com/lgcavalheiro/go-svelte-embed-starter/frontend"
 	"github.com/lgcavalheiro/go-svelte-embed-starter/services"
 )
 
 var apiPrefix = "/api"
 
-func RegisterWebRoutes(e *echo.Echo) {
-	e.GET("/*", echo.WrapHandler(frontend.DirFS))
+func RegisterWebRoutes() {
+	http.Handle("/", frontend.GetEmbeddedFiles())
 }
 
-func RegisterApiRoutes(e *echo.Echo) {
-	e.GET(fmt.Sprintf("%s/healthcheck", apiPrefix), services.Healthcheck)
-	e.GET(fmt.Sprintf("%s/double", apiPrefix), services.Double)
+func RegisterApiRoutes() {
+	http.HandleFunc(fmt.Sprintf("%s/healthcheck", apiPrefix), services.Healthcheck)
+	http.HandleFunc(fmt.Sprintf("%s/double", apiPrefix), services.Double)
 }

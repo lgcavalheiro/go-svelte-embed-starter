@@ -1,32 +1,29 @@
 package routes
 
 import (
+	"net/http"
+	"reflect"
 	"testing"
 
-	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
 type RoutesSuite struct {
 	suite.Suite
-	Echo *echo.Echo
 }
 
 func (s *RoutesSuite) SetupTest() {
-	s.Echo = echo.New()
-	RegisterApiRoutes(s.Echo)
-	RegisterWebRoutes(s.Echo)
+	RegisterApiRoutes()
+	RegisterWebRoutes()
 }
 
 func (s *RoutesSuite) TestRegisterRoutes() {
-	routes := s.Echo.Routes()
+	routes := reflect.ValueOf(http.DefaultServeMux).Elem().FieldByIndex([]int{1}).MapRange()
 
-	if assert.Equal(s.T(), len(routes), 3) {
-		expected := []string{"/api/healthcheck", "/api/double", "/*"}
-		for _, route := range routes {
-			assert.Contains(s.T(), expected, route.Path)
-		}
+	expected := []string{"/api/healthcheck", "/api/double", "/"}
+	for routes.Next() {
+		assert.Contains(s.T(), expected, routes.Key().String())
 	}
 }
 

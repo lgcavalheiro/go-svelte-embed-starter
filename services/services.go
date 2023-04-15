@@ -1,25 +1,30 @@
 package services
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
-
-	"github.com/labstack/echo/v4"
 )
 
 type DoubleResult struct {
 	Result int `json:"result"`
 }
 
-func Healthcheck(c echo.Context) error {
-	return c.String(http.StatusOK, "OK")
+func Healthcheck(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "OK")
 }
 
-func Double(c echo.Context) error {
-	number, err := strconv.Atoi(c.QueryParam("number"))
+func Double(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	number, err := strconv.Atoi(r.URL.Query().Get("number"))
+
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "param number was invalid")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode("param number was invalid")
+		return
 	}
 
-	return c.JSON(http.StatusOK, &DoubleResult{Result: number * 2})
+	json.NewEncoder(w).Encode(&DoubleResult{Result: number * 2})
 }

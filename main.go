@@ -1,18 +1,16 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
+	"log"
+	"net/http"
+
 	"github.com/lgcavalheiro/go-svelte-embed-starter/routes"
 )
 
-func createServer() *echo.Echo {
-	e := echo.New()
-	routes.RegisterWebRoutes(e)
-	routes.RegisterApiRoutes(e)
-	return e
-}
-
 func main() {
-	e := createServer()
-	e.Logger.Fatal(e.Start(":1323"))
+	routes.RegisterWebRoutes()
+	routes.RegisterApiRoutes()
+
+	log.Println("Listening @ http://localhost:1323")
+	log.Fatal(http.ListenAndServe(":1323", nil))
 }

@@ -2,12 +2,14 @@ package frontend
 
 import (
 	"embed"
+	"io/fs"
 	"net/http"
-
-	"github.com/labstack/echo/v4"
 )
 
 //go:embed dist
-var dir embed.FS
+var fsys embed.FS
 
-var DirFS = http.FileServer(http.FS(echo.MustSubFS(dir, "dist")))
+func GetEmbeddedFiles() http.Handler {
+	html, _ := fs.Sub(fsys, "dist")
+	return http.FileServer(http.FS(html))
+}
