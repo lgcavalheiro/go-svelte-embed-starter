@@ -1,30 +1,32 @@
 package services
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/suite"
 )
 
-type ServicesSuite struct {
-	suite.Suite
+func HandleErrorMsg(expected, received interface{}) string {
+	return fmt.Sprintf("[ERROR] Expected %v but got %v\n", expected, received)
 }
 
-func (s *ServicesSuite) TestHealthcheck() {
+func TestHealthcheck(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
 
 	Healthcheck(rec, req)
 
-	assert.Equal(s.T(), http.StatusOK, rec.Result().StatusCode)
-	assert.Equal(s.T(), "OK", rec.Body.String())
+	if http.StatusOK != rec.Result().StatusCode {
+		t.Error(HandleErrorMsg(http.StatusOK, rec.Result().StatusCode))
+	}
+	if rec.Body.String() != "OK" {
+		t.Error(HandleErrorMsg("OK", rec.Body.String()))
+	}
 }
 
-func (s *ServicesSuite) TestDouble() {
+func TestDouble(t *testing.T) {
 	q := make(url.Values)
 	q.Set("number", "2")
 	req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
@@ -32,11 +34,15 @@ func (s *ServicesSuite) TestDouble() {
 
 	Double(rec, req)
 
-	assert.Equal(s.T(), http.StatusOK, rec.Code)
-	assert.Equal(s.T(), "{\"result\":4}\n", rec.Body.String())
+	if http.StatusOK != rec.Code {
+		t.Error(http.StatusOK, rec.Code)
+	}
+	if rec.Body.String() != "{\"result\":4}\n" {
+		t.Error("{\"result\":4}\n", rec.Body.String())
+	}
 }
 
-func (s *ServicesSuite) TestDoubleFailure() {
+func TestDoubleFailure(t *testing.T) {
 	q := make(url.Values)
 	q.Set("number", "NAN")
 	req := httptest.NewRequest(http.MethodGet, "/?"+q.Encode(), nil)
@@ -44,10 +50,10 @@ func (s *ServicesSuite) TestDoubleFailure() {
 
 	Double(rec, req)
 
-	assert.Equal(s.T(), http.StatusBadRequest, rec.Code)
-	assert.Equal(s.T(), "\"param number was invalid\"\n", rec.Body.String())
-}
-
-func TestRunServicesSuite(t *testing.T) {
-	suite.Run(t, new(ServicesSuite))
+	if http.StatusBadRequest != rec.Code {
+		t.Error(http.StatusBadRequest, rec.Code)
+	}
+	if rec.Body.String() != "\"param number was invalid\"\n" {
+		t.Error("\"param number was invalid\"\n", rec.Body.String())
+	}
 }

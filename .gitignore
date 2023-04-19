@@ -1,6 +1,7 @@
 # Project specific
 output/
 coverage/
+.env
 
 # Logs
 logs

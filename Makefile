@@ -5,8 +5,6 @@ PROJECT=gses
 FRONTMANAGER=cd frontend && npm run
 COVER=coverage
 
-# https://stackoverflow.com/questions/28459102/golang-compile-environment-variable-into-binary
-
 present:
 	@echo "   ___________ ___________"
 	@echo "  / ____/ ___// ____/ ___/"
